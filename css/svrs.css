@@ -1,0 +1,79 @@
+/* Servidores pagina principal */
+.svrdiv {
+    margin-right: 10px;
+    margin-left: 10px;
+    background: white;
+}
+.svrbox{
+    width: 90%;
+    margin: auto;
+    overflow: hidden;
+    /*align-items: center;*/
+    background: white;
+    margin-top: 20px;
+}
+
+.svrbox ul{
+    padding: 0px;
+    margin: 0px;
+}
+
+
+.svrbox ul li{
+    border-radius: 10px;
+    border:1px solid #dedede;
+    margin :20px 18px 30px 18px;
+    /*padding-bottom: 5em;*/
+    /*margin :20px 0px 20px 55px;*/
+    float:left;
+    list-style: none;
+    /*position: relative;*/
+    min-height: 1px;
+    padding-right: 10px;
+    padding-left: 10px;
+    width:11.5%;
+    /*width:calc(20% - 10px)*/
+    height:200px;
+    background: white;
+    /*box-sizing: border-box;*/
+    
+}
+
+.svrbox ul li:hover{
+    opacity: 0.8;
+    transform: scale(1.2);
+    background: #5270e8;
+    /*box-shadow: 2px 2px 2px #0a096f;*/
+}
+
+.svrbox ul li .headbox{
+    width: 100%;
+    height:40px;
+    line-height: 50px;
+    /*background: white;*/    
+    text-align: center;
+    color:black ;
+    font-size: 20px;
+   
+}
+.svrbox ul li .infobox{
+    width: 100%;
+    height:40px;
+    line-height: 10px;
+    /*background: white;*/    
+    text-align: left;
+    color:black ;
+    font-size: 11px;
+   
+}
+/*
+@media screen and (max-width:1250px){
+    .svrbox ul li{
+        width:40%;
+        margin-left: 40px;
+         
+    }
+*/  
+
+
+/* fin Servidores pagina principal */

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  	<meta charset="UTF-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  	<title>BDP</title>
+  	<link rel="stylesheet" href="css/SFlexBox.css">
+  	<script src="js/jquery-3.5.1.min.js"></script>
+  	<script src="js/scripts.js"></script>
+  	<link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+  	</head>
+<body>
+	 <div class="padre">
+        <header class="header">
+            <div class="menu">
+                <div class="logo">
+                </div>
+                <div class="nav">
+                </div>
+            </div>
+        </header>
+    </div>
+
+
+
+	<!-- contenido de la pagina -->     
+	
+<div class="content-container p-top-3 p-bottom-9">
+  <div class="main-content" style="display: block;">
+      <br>
+      <br>
+      <br>
+      <br>
+    <div class="article-column">
+    <article>
+      <h1 class="mainheader">
+      Procedimiento BDP</h1>
+      <div class="article-body markdown">
+        <h3 class="subheader">Objetivo</h3>
+<div class="solvvy-solution">
+<p style=”text-align: justify;”>Circulo de Credito y Buro de Credito comparten entre si, su base de datos principal (BDP). Este proceso se realiza al rededor del dia 20 y consta de 3 etapas: 1. Circulo de Credito GENERA su BDP, 2. Circulo de Credito ENVIA su BDP, 3. Circulo de Credito GARGA la BDP de Buro de Credito. Este procedimiento es uno de los mas importantes para el area de operaciones, ya que la falla o la ejecucion a destiempo tendra repercuciones economicas para Circulo de Credito.</p>
+
+</div>
+<br>
+<br>
+<h2 class="tituloh2">Generar BDP de Circulo de Credito y enviarla al SFTP de Buro de Credito</h2>
+
+        <h3 class="subheader">Paso 1: Preparar terminales</h3>
+<div class="solvvy-solution">
+<p><b>Previo:</b></p>
+✓ Revisar espacio necesario
+            <ol><small>
+                <li>APPCC  /var/scc/intf... 30GB MINIMO</li>
+                <li>APPCC  /odata/intf-xml/CIFRADO/BURO... 30GB MINIMO</li>
+                <li>SFTP   /jaulas/burodecredito/home/user/... 12GB MINIMO</li>
+            </small>
+            </ol>  
+          ✓ Pruebas de conexion hacia el sftp de Buro de Credito
+<div class="preboxcontainer">
+<pre class="prebox">
+  <span class="server">operaciones:~ operaciones$ </span><span class="command">ssh sftp</span>
+  <span class="server">-bash-3.2$ </span><span class="command">cd /jaulas/burodecredito/home/user/ENVIO/OK</span>
+  <span class="server">-bash-3.2$ </span><span class="command">ssh circuloc@207.248.70.182</span>
+</pre>
+</div>
+        ✓ Revisar scripts segun el site donde se encuentre la produccion
+<br>
+<br>  
+<p>Entre 7:00 y 8:00, abrir 2 terminales desde la 10.59.0.46 :</p>
+</div>
+
+Terminal 1: Para ejecutar script de cargabdp
+<div class="preboxcontainer">
+<pre class="prebox"><span class="server">[operaciones@oper02@TERRET]$ </span><span class="command">ssh cargabdp@10.50.45.14</span>
+<span class="server">[cargabdp@appcc ~]$ </span><span class="command">cd /export/home2/cargabdp/bin</span></pre>
+</div>
+
+Terminal 2: Para monitorear el log de la generacionde registros de la BDP
+<div class="preboxcontainer">
+<pre class="prebox"><span class="server">[operaciones@oper02@TERRET]$ </span><span class="command">ssh cargabdp@10.50.45.14</span>
+<span class="server">[cargabdp@appcc ~]$ </span><span class="command">cd /var/scc/intf</span></pre>
+</div>
+<table>
+  <tr>
+    <td><img src="img/important_logo.png"></td> 
+    <td><em><b> NOTA:</b> Se usa la iMac de operaciones porque usa cable eth.</em></td>
+  </tr>
+</table>
+<br>
+<br>
+
+        <h3 class="subheader">Paso 2: Ejecutar la generacion de la BDP</h3>
+<div class="solvvy-solution">
+<p>Aproximadamente a las 8:00, se reciben 2 correos donde se indica el inicio y termino de la BDP, sin errores. 
+
+<div>
+<pre style="background-color:rgb(240, 240, 240);">
+  <table>
+  <tr>
+    <td>   <img src="img/BDP_mail2.png" alt="" width="450" height=""></td>
+    <td>  </td>
+    <th><img src="img/BDP_mail1.png" alt="" width="450" height=""></th>
+  </tr>
+</table>
+</pre>
+</div>
+
+<table>
+  <tr>
+    <td><img src="img/important_logo.png"></td>
+    <td style="font-family: arial"> <b> IMPORTANTE:</b> En caso de que el mail indique errores, se deben reportar al DBA(Jorge Neira) y a Jesus Gutierrez, y esperar a que confirmen la creacion de la BDP sin errores.</td>
+  </tr>
+</table>
+
+<p>En la terminal cargabdp@10.50.45.14:/export/home2/cargabdp/bin, Ejecutar generar_bdp.sh</p>
+<div class="preboxcontainer">
+<pre class="prebox"><span class="server">[cargabdp@appcc ~/bin]$ </span><span class="command">genera_bdp.sh</span>
+<span class="server">[cargabdp@appcc ~/bin]$ </span><span class="command"> </span></pre>
+</div>
+<p>Posteriormente, en la terminal 2, confirmar que haya comenzado a generar registros de la BDP en el archivo /var/scc/intf/intf-component.log y enviar status.</p>
+<div class="preboxcontainer">
+<pre class="prebox"><span class="server">[cargabdp@appcc  /var/scc/intf]$ </span><span class="command">tail intf-component.log</span>
+  <br>
+<span class="server">[cargabdp@appcc  /var/scc/intf]$ </span><span class="command">ps -fea |grep bdp</span></pre>
+</div>
+<table>
+  <tr>
+    <td><img src="img/important_logo.png"></td>
+    <td style="font-family: arial"> <b> IMPORTANTE:</b> No se debe ejecutar mas de una vez generar_bdp.sh, porque generará registros duplicados.</td>
+  </tr>
+</table>
+<p>Se envia status por correo a sysmon de los registros de la BDP generados hasta el momento, asi como la confirmacion de que se esta ejecutando el script genera_bdp.sh</p>
+<div>
+<pre style="background-color:rgb(240, 240, 240);">
+  Buenos días&nbsp;
+
+
+  Para la generación de la Base de Datos Primaria se revisan los siguientes puntos:
+
+  (1)&nbsp;Se revisan espacios en:
+
+  [cargabdp@appcc &nbsp; &nbsp;&nbsp;/var/scc/intf]...&nbsp;44G
+  [admin@sftp &nbsp; &nbsp;&nbsp;/jaulas/burodecredito/home/user/]...&nbsp;14G
+  [cargabdp@appcc &nbsp;&nbsp;/odata/intf-xml/CIFRADO/BURO]...&nbsp;102G
+
+  (2)&nbsp;Se recibe correo de inicio y de termino del proceso de Base de Datos primaria, este ultimo no muestra error.
+
+  (3)&nbsp;Se da&nbsp;inicio al proceso de GENERACION de la BDP.
+
+  El proceso de generación de la BDP&nbsp;sigue corriendo:
+
+
+  y lleva 10000… registros:
+
+  Saludos!
+
+</pre>
+</div>
+<p>Si llegara a mandar error la generacion de la BDP, se debe notificar a sysmon con copia a DBA, Jose Omar Rojas Bermudez, Ivan Alejandro Hernandez Garcia.</p>
+
+<div><pre style="background-color:rgb(240, 240, 240);">
+  Buenas tardes.
+
+  Se les informa que durante la generación de la BDP (Entrega)
+  Se detectó el siguiente mensaje:
+
+  <b style="color:red;">logs de ejemplo: </b> 
+  [20-10-2017 16:55:03.192][mx.com.circulodecredito.intf.extractor.INTFExtractor.main] [INFO ] ::  Account processed [10214...
+  Elapsed time :: 0.0 seconds.
+  20-10-2017 16:55:03.230][mx.com.circulodecredito.intf.extractor.INTFExtractor.main] [ERROR] :: reading input file
+
+</pre>
+</div>
+<br>
+<h3 class="subheader">Paso 3: Monitorear los registros generados</h3>
+<p>En cargabdp@10.50.45.14:/var/scc/intf revisamos periodicamente los registros generador en el archivo intf-component.log y enviamos correo del status.</p>
+<div class="preboxcontainer">
+<pre class="prebox"><span class="server">[cargabdp@appcc  /var/scc/intf]$ </span><span class="command">tail intf-component.log</span></pre>
+</div>
+<br>
+
+<h3 class="subheader">Paso 4: Generacion de la BDP completada</h3>
+<p>La generacion terminara cuando en intf-component.log se finaliza con los registros. Notificar por correo a Jose Omar Rojas Bermudez, Monitoreo Circulo de Credito y DB Administrator el termino y adjuntar registros totales generados.</p>
+
+<div class="preboxcontainer">
+<pre class="prebox"><span class="server">[cargabdp@appcc  /var/scc/intf]$ </span><span class="command">tail intf-component.log</span></pre>
+</div>
+<div><pre style="background-color:rgb(240, 240, 240);">
+  Buenas tardes.
+
+  Se informa el total de registros generados en la BDP
+
+  Total de registros: 61960784
+
+  <img src="img/BDP_fin.png" alt="" width="950" height="">
+
+</pre>
+</div>
+<br>
+<h3 class="subheader">Paso 5: Envio de la BDP</h3>
+
+<p>La generacion satisfactoria de la BDP crea dos archivos:</p>
+<ul>
+<li>15G FECHA HORA intf10-ccredito-FECHA.intf</li>
+<li>4.7G FECHA HORA intf10-ccredito-FECHA.intf.pgp</li>
+</ul>
+<p>Este ultimo se transfiere de manera automatica al SFTP una ves que se termina de generar.</p>
+
+En la terminal admin@172.17.1.21/jaulas/burodecredito/home/user/ENVIO se monitorea envio.sh.log para ver los registros entregados.
+<div class="preboxcontainer">
+<pre class="prebox"><span class="server">operaciones:~ operaciones$ </span><span class="command">ssh sftp</span>
+<span class="server">-bash-3.2$ </span><span class="command">cd /jaulas/burodecredito/home/user/ENVIO</span>
+<span class="server">-bash-3.2$ </span><span class="command">tail envio.sh.log</span>
+07/08/12-15:48:21
+si existe el archivo listo.txt ya puedes empezar a transferirlo
+ya se esta copiando
+TAMANOR 25612288 contra 25612288
+Ya termino
+</pre>
+</div>
+
+<p>En caso de que falle el envio automatico, se enviará manualmente el archivo intf10-ccredito-FECHA.intf.gpg desde la terminal cargabdp@appcc</p> 
+<p>Validar:</p>
+<ol>
+  <li>Que el archivo se haya terminado de generar</li>
+  <li>Que el archivo se encuentre cifrado</li>
+  <li>Se cambia su extension .pgp a .gpg </li>
+</ol>
+<div class="preboxcontainer">
+<pre class="prebox"><span class="server">[cargabdp@appcc /var/scc/intf]$ </span><span class="command">ls -lhtr</span>
+<span class="server">[cargabdp@appcc /var/scc/intf]$ </span><span class="command">scp intf10-ccredito(fecha).intf.gpg admin@172.17.1.21:/jaulas/burodecredito/home/user/ENVIO/OK</span>
+</pre>  
+</div>
+<br>
+<br>
+<h2 class="tituloh2">Cargar BDP de Buro de Credito en el BD de Circulo de Credito</h2>
+<h3 class="subheader">Paso 1: Abrir terminales</h3>
+Terminal 1: APPCC para ejecutar el script de la carga de la BDP
+<div class="preboxcontainer">
+<pre class="prebox"><span class="server">operaciones:~ operaciones$ </span><span class="command">ssh 10.59.0.46</span>
+<span class="server">[operaciones@oper02@TERRET ~]$ </span><span class="command">ssh 10.50.45.14</span>
+</pre>  
+</div>
+Terminal 2: APPCC para monitorear la carga de la BDP
+<div class="preboxcontainer">
+<pre class="prebox"><span class="server">operaciones:~ operaciones$ </span><span class="command">ssh 10.59.0.46</span>
+<span class="server">[operaciones@oper02@TERRET ~]$ </span><span class="command">ssh cargabdp@10.50.45.14</span>
+</pre>  
+</div>
+Terminal 3: SFTP
+<div class="preboxcontainer">
+<pre class="prebox"><span class="server">operaciones:~ operaciones$ </span><span class="command">ssh sftp</span>
+</pre>  
+</div>
+<br>
+<h3 class="subheader">Paso 2: Carga de la BDP de Buro de Credito</h3>
+<p>En esta etapa se cargara la base de datos que deposita Buro de Credito en /jaulas/burodecredito/home/user entre el 17 y 19 del mes.</p>
+
+<p>Confirmar que haya depositado su BDP Buro de Credito</p>
+<div class="preboxcontainer">
+<pre class="prebox"><span class="server">-bash-3.2$ </span><span class="command">cd /jaulas/burodecredito/home/user</span>
+<span class="server">-bash-3.2$$ </span><span class="command">ls -lhtr</span>
+Noviembre-2020/Entrega Cierres:
+-rw-r--r--   1 burodecredito ftp         993M Nov 18 10:09 BDNAD-C.zip.pgp
+Noviembre-2020/Entrega Desactualizadas:
+-rw-r--r--   1 burodecredito ftp          92M Nov 18 10:06 BDNAD.zip.pgp
+Noviembre-2020/Entrega Normal:
+-rw-r--r--   1 burodecredito ftp         1.6G Nov 18 09:57 BDN.zip.pgp
+</pre>  
+</div>
+
+<p>Desde la iMac 10.59.0.46 conectarse a la 10.50.45.14 de Santa Fe para ejecutar carga_bdp.sh</p>
+<div class="preboxcontainer">
+<pre class="prebox"><span class="server">[cargabdp@appcc 06:14 PM ~]$ </span><span class="command">carga_bdp.sh</span>
+</pre>  
+</div>
+
+<p>En otra terminal esperamos a que se decifre</p>
+<div class="preboxcontainer">
+<pre class="prebox">
+<span class="server">[cargabdp@appcc 06:14 PM ~]$ </span><span class="command">tail -f cargar_bdp.sh.log</span>
+</pre>  
+</div>
+<br>
+<h3 class="subheader">Paso 3: Monitereo de la carga</h3>
+<p>En la terminal cargabdp@appcc monitoreamos el proceso de carga y la ejecucion del script carga_bdp.sh. Se envia status por correo periodicamente.</p>
+<div class="preboxcontainer">
+<pre class="prebox">
+<span class="server">[cargabdp@appcc 06:14 PM ~]$ </span><span class="command">cd /opt/scc/intf-update</span>
+<span class="server">[cargabdp@appcc 06:14 PM ~]$ </span><span class="command">./IntfMonitor.sh ; ps -fea |grep -i carga</span>
+</pre>  
+</div>
+
+<div><pre style="background-color:rgb(240, 240, 240);">
+  Buenas tardes.
+
+  Se informa el estado actual del proceso de carga de la BDP: Activo y sin errores
+  Se encuentra en el paso 5
+
+  <img src="img/carga-status.png" alt="" width="850" height="">
+
+</pre>
+</div>
+<br>
+
+<h3 class="subheader">Paso 4: Envio del archivo XML</h3>
+
+<p>Cuando termina el paso 3 (Crea el archivo XML con registros nuevos que se insertar?n en CDC.CDC_CREDITO), se crea el archivo xml_new_data23-FECHA.xml en la .11 en /cloudfs/dirs, y se realiza el siguiente procedimiento:</p>
+<ol>
+  <li>Se comprime en bz2</li>
+  <div class="preboxcontainer">
+  <pre class="prebox">
+  <span class="server">[admin@dbscc-sf1 dirs]$ </span><span class="command">sudo bzip2 -9 xml_new_dataFECHA.xml</span>
+</pre>  
+</div>
+<li>Se copia a cargas</li>
+<div class="preboxcontainer">
+  <pre class="prebox">
+  <span class="server">[admin@dbscc-sf1 dirs]$ </span><span class="command">scp xml_new_dataFECHA.xml.bz2  cargas@10.50.0.71:/archivos/fuentes/registros</span>
+</pre>  
+</div>
+
+<li>Se crea archivo .ok en cargas</li>
+<div class="preboxcontainer">
+  <pre class="prebox">
+  <span class="server">[cargas@app05 /archivos/fuentes/registros]$ </span><span class="command">touch xml_new_dataFECHA.xml.bz2.ok</span>
+</pre>  
+</div>
+
+<li>Se notifica por correo a sysmon y a Monica Navil Herrera de que ya se registro y transfirió el xml</li>
+<div><pre style="background-color:rgb(240, 240, 240);">
+  Buenas tardes.
+
+  Se transfiere el archivo XML de la BDP de Buro de Credito Diciembre 2020
+  El archivo se encuentra en /archivos/fuentes
+
+  <img src="img/p3-xml.png" alt="" width="450" height="">
+  
+</pre>
+</div>
+</ol>
+<br>
+<h3 class="subheader">Paso 5: Fin de la carga de la BDP de Buro de credito</h3>
+<p>Concluyendo el proceso de la carga de la BDP de Buro de Credito, se notifica por correo a sysmon, Jorge Neira y Omar Rojas.</p>
+<div class="preboxcontainer">
+<pre class="prebox">
+  <span class="server">[cargabdp@appcc 06:14 PM ~]$ </span><span class="command">./IntfMonitor.sh ; ps -fea |grep -i carga</span>
+</pre>  
+</div>
+<div><pre style="background-color:rgb(240, 240, 240);">
+  Buen dia.
+
+  Se les informa que se concluyo el proceso de carga de la BDP.
+  Durante el cual no se presentaron incidencias o errores.
+
+  <img src="img/carga-fin.png" alt="" width="850" height="">
+
+</pre>
+</div>
+
+<h2 class="subheader">Concluciones</h2>
+<div class="solvvy-solution">
+ </div>
+<h2 class="subheader">Ver también</h2>
+<div class="solvvy-hidden">
+<ul>
+<li><a href="https://help.dreamhost.com/hc/es/articles/215089118-Generalidades-de-el-proceso-de-agregar-un-certificado-SSL">Otro Procedimiento 1 </a>&#128760;</li>
+<li><a href="https://help.dreamhost.com/hc/es/articles/216539558-Generalidades-sobre-certificado-de-seguridad-Let-s-Encrypt">Otro Procedimiento 2 </a>&#128760;</li>
+<li><a href="https://help.dreamhost.com/hc/es/articles/216041537-Generalidades-sobre-certificados-SSL">Otro Procedimiento 3 </a>&#128760;</li>
+</ul>
+</div>
+     
+      
+    </article>
+  
+  </div>
+  <br>
+  <br>
+  <center><span>Dudas: <a href=mailto:saul.pueblita@circulodecredito.com.mx>saul.pueblita@circulodecredito.com.mx</a></span></center>
+  <br>
+
+  </section>
+
+</div>
+  
+</div>
+	
+	<!-- Termina el contenido de la pagina  -->
+			<footer class="footer_principal">
+			</footer>
+	</body>
+</html>
+
+

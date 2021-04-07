@@ -1,0 +1,63 @@
+.section-01{
+        margin-top: 10%;
+        margin-left: 70px;
+        margin-right: 120px;
+    }    
+
+h1 {
+    font-size: x-large;
+    text-align: center;
+}
+
+.txt1{
+
+    color:whitesmoke;
+    background-color: dimgrey;
+    width: auto;
+    border: 1px solid rgb(206, 201, 201);
+    padding: 10px 20px 10px 20px;
+    text-align: center;
+    font-size: medium;
+}
+
+.txt2{
+
+    color:whitesmoke;
+    background-color: dimgrey;
+    width: auto;
+    border: 1px solid rgb(206, 201, 201);
+    padding: 10px 20px 10px 20px;
+    text-align: justify;
+    font-size: medium;
+}
+
+.txt3{
+
+    color:whitesmoke;
+    background-color: dimgrey;
+    width: auto;
+    border: 1px solid rgb(206, 201, 201);
+    padding: 10px 10px 10px 10px;
+    text-align: justify;
+    font-size: medium;
+    line-height: 1.5;
+}
+
+.txt4{
+
+    color:whitesmoke;
+    background-color: dimgrey;
+    width: auto;
+    border: 1px solid rgb(206, 201, 201);
+    padding: 10px 10px 10px 10px;
+
+    font-size: medium;
+    line-height: 1.5;
+}
+
+.weblogic {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    width: 100%;
+  }
